@@ -1,0 +1,156 @@
+---
+title: "Capstone Project-How Can a Wellness Technology Company Play It Smart?"
+author: "Jayanthi Manickam Sethu"
+date: "2022-10-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### This is my **Google Capstone Project**. My first data analysis project in R
+
+**Stakeholders**<BR/>
+**Urška Sršen**: Bellabeat’s cofounder and Chief Creative Officer<BR/>
+**Sando Mur**: Mathematician and Bellabeat’s cofounder; key member of the Bellabeat executive team
+<BR/>
+This analysis answers to the below questions
+
+* What are some trends in smart device usage?
+* How could these trends apply to Bellabeat customers?
+* How could these trends help influence Bellabeat marketing strategy?
+
+**Business Task** </BR>
+To deduct the trend of smart devices usage and give recommendations to improve the Bellabeat app
+
+<BR/>
+**Process** <BR/>
+Before starting to load the files through R. I did some cleaning in the data files.
+
+* The date format across the files was not consistent.So converted Non date dates through Data->Text to columns and formatted the date.
+* I did a VLOOKUP and merged data from 2 CSV files-Got the calories data and merged in daily steps data
+* There was no data for water intake. So I took data from <https://www.worldometers.info/water/>. It gives details about Water intake across the countries.
+<BR/>
+
+**Installing the necessary packages**
+```{r Installing the necessary packages}
+      
+      library(tidyverse)
+      library(lubridate)
+      library(ggplot2)
+      library(dplyr)
+      library(grid)
+      library(ggpmisc)
+```
+
+** Set the working directory **
+```{r 
+```
+
+
+**Read CSV Files**
+
+```{r  Set the working Directory and Read CSV files}
+      
+      # Set current working directory.
+      setwd("C:/Users/Jay/OneDrive/Jay Study/Google data analytics/Capstone Project/Data/Fitabase Data 4.12.16-5.12.16")
+      
+      # Get and print current working directory.
+      print(getwd())
+      
+      sleepData <- read.csv("sleepDay_merged.csv")
+      print(is.data.frame(sleepData))
+      print(ncol(sleepData))
+      print(nrow(sleepData))
+      head(sleepData)
+      totalTimeTakentoSleep <- sleepData %>% 
+                       group_by(Id,SleepDay) %>% 
+                       summarise(TimeTakenToSleep = sum(TimeTakenToSleep))%>%
+                       arrange(desc(TimeTakenToSleep))
+      print(ncol(totalTimeTakentoSleep))
+      print(nrow(totalTimeTakentoSleep))
+      head(totalTimeTakentoSleep)
+
+      #topTimeTakentoSleep <-head(totalTimeTakentoSleep, 5)
+
+      # print(ncol(topTimeTakentoSleep))
+      # print(nrow(topTimeTakentoSleep))
+      # head(topTimeTakentoSleep)
+      
+      waterIntakeData <- read.csv("world_water_intake.csv")
+      print(is.data.frame(waterIntakeData))
+      print(ncol(waterIntakeData))
+      print(nrow(waterIntakeData))
+      head(waterIntakeData)
+      
+
+      topwaterIntake <- head(waterIntakeData,5)
+      
+
+      print(ncol(topwaterIntake))
+      print(nrow(topwaterIntake))
+      head(topwaterIntake)
+
+      calorieData <- read.csv("weightLogInfo_merged.csv")
+      print(is.data.frame(calorieData))
+      print(ncol(calorieData))
+      print(nrow(calorieData))
+      head(calorieData)
+      # filterCalorieData <-calorieData %>% group_by(Id) %>%
+      #                     summarise(max_WeightKg=max(WeightKg))
+      # head(filterCalorieData)
+      
+      calorieStepsData <- read.csv("dailySteps_merged.csv")
+      print(is.data.frame(calorieStepsData))
+      print(ncol(calorieStepsData))
+      print(nrow(calorieStepsData))
+      head(calorieStepsData)
+      
+```
+** Scatter Plot for Sleep pattern **
+```{r}
+ggplot(data = totalTimeTakentoSleep) +
+  geom_point(mapping = aes(x =SleepDay,y= TimeTakenToSleep),color="purple")+
+  ggtitle("Time Taken to sleep each day")
+
+ggplot(data = topwaterIntake,aes(Country, YearlyWaterUsed)) +
+  geom_point() +
+  annotate(geom = "table",
+           x = 9,
+           y = 3,
+           label = list(topwaterIntake))+
+  ggtitle("Water Intake of Top 5 populated Countries")
+
+# ggplot(data = calorieStepsData,aes(x=StepTotal,y=TotalCaloriesBurnt)) +
+#  geom_boxplot(outlier.colour="red", outlier.shape=8,
+#                 outlier.size=4)
+
+ggplot(data = calorieStepsData) + 
+  geom_point(mapping = aes(x = StepTotal,y = TotalCaloriesBurnt,color=Id))+
+  ggtitle("Steps walked vs Calories Burnt")
+  # facet_wrap(~Id)
+
+
+ggplot(data = calorieData,aes(x=WeightKg,y=BMIStatus)) +
+          geom_violin()+
+  ggtitle("Weight vs BMI")
+  
+
+
+
+ 
+
+```
+</BR></BR>**Recommendations**</BR>
+
+* In the smart devices, there is a feature to set reminder to drink water but if there is a feature in app to enter the measures of water intake every time the user drinks. By end of the day,the user can know the status of water intake with a status-Normal,More or Less intake. 
+
+* Should there be a provision to enter weight weekly or monthly and track BMI indicating Overweight or Normal
+
+
+
+
+
+
+
